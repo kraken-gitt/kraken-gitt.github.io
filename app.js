@@ -67,3 +67,15 @@ const secretOutput = document.querySelector('#secret-output');
 function randomSecret() { const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz' + (document.querySelector('#secret-numbers').checked ? '23456789' : '') + (document.querySelector('#secret-symbols').checked ? '!@#$%^&*_-+=' : ''); const bytes = new Uint32Array(24); crypto.getRandomValues(bytes); return Array.from(bytes, (byte) => chars[byte % chars.length]).join(''); }
 function generateSecret() { secretOutput.textContent = randomSecret(); }
 document.querySelector('#generate-secret').addEventListener('click', generateSecret); document.querySelector('#copy-secret').addEventListener('click', async () => { if (secretOutput.textContent === 'Cliquez pour générer') generateSecret(); await navigator.clipboard.writeText(secretOutput.textContent); const button = document.querySelector('#copy-secret'); button.textContent = '✓'; setTimeout(() => { button.textContent = '⧉'; }, 1200); });
+
+// Command Center demo interactions.
+const postureScore = document.querySelector('#posture-score');
+const securityChecks = document.querySelectorAll('.security-check');
+securityChecks.forEach((check) => check.addEventListener('change', () => {
+  const completed = [...securityChecks].filter((item) => item.checked).length;
+  postureScore.textContent = 82 + completed * 4;
+}));
+document.querySelectorAll('.sidebar-item').forEach((item) => item.addEventListener('click', () => {
+  document.querySelectorAll('.sidebar-item').forEach((button) => button.classList.remove('active'));
+  item.classList.add('active');
+}));
