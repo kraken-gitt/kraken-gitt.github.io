@@ -1,35 +1,20 @@
-const $ = (selector) => document.querySelector(selector);
-const state = { books: JSON.parse(localStorage.getItem('krakloock_library') || '[]') };
-const save = () => localStorage.setItem('krakloock_library', JSON.stringify(state.books));
-const format = (name) => name.toLowerCase().endsWith('.epub') ? 'EPUB' : 'PDF';
-
-function render() {
-  const query = $('#search').value.toLowerCase().trim();
-  const filter = $('#filter').value;
-  const books = state.books.filter((book) => (filter === 'all' || book.format === filter) && (!query || `${book.name} ${book.format}`.toLowerCase().includes(query)));
-  $('#hero-count').textContent = state.books.length;
-  $('#empty').style.display = books.length ? 'none' : 'block';
-  $('#book-grid').innerHTML = books.map((book) => `<article class="book-card"><div class="cover ${book.format.toLowerCase()}"><span>${book.format}</span><strong>${book.name.slice(0, 1).toUpperCase()}</strong></div><div class="book-info"><span class="book-format">${book.format} · LOCAL</span><h3>${book.name.replace(/\.(pdf|epub)$/i, '')}</h3><small>${(book.size / 1024 / 1024).toFixed(1)} MB · ajouté à votre catalogue</small><div><button class="read" data-id="${book.id}">Ouvrir ↗</button><button class="remove" data-id="${book.id}">Retirer</button></div></div></article>`).join('');
-  document.querySelectorAll('.read').forEach((button) => button.addEventListener('click', () => openBook(state.books.find((book) => book.id === button.dataset.id))));
-  document.querySelectorAll('.remove').forEach((button) => button.addEventListener('click', () => { state.books = state.books.filter((book) => book.id !== button.dataset.id); save(); render(); }));
-}
-
-function addFiles(files) {
-  [...files].filter((file) => /\.pdf$|\.epub$/i.test(file.name)).forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = () => { state.books.push({ id: crypto.randomUUID(), name: file.name, format: format(file.name), size: file.size, data: reader.result }); save(); render(); };
-    reader.readAsDataURL(file);
-  });
-}
-
-function openBook(book) { if (!book) return; $('#reader-title').textContent = book.name; $('#reader-frame').src = book.data; $('#reader').showModal(); }
-$('#file-input').addEventListener('change', (event) => addFiles(event.target.files));
-$('#dropzone').addEventListener('dragover', (event) => { event.preventDefault(); $('#dropzone').classList.add('drag'); });
-$('#dropzone').addEventListener('dragleave', () => $('#dropzone').classList.remove('drag'));
-$('#dropzone').addEventListener('drop', (event) => { event.preventDefault(); $('#dropzone').classList.remove('drag'); addFiles(event.dataTransfer.files); });
-$('#search').addEventListener('input', render);
-$('#filter').addEventListener('change', render);
-$('#close-reader').addEventListener('click', () => $('#reader').close());
-$('#clear').addEventListener('click', () => { if (confirm('Effacer tous les livres et données locales ?')) { state.books = []; save(); render(); } });
-$('#export').addEventListener('click', () => { const blob = new Blob([JSON.stringify(state.books.map(({ data, ...book }) => book), null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'krakloock-library.json'; link.click(); URL.revokeObjectURL(link.href); });
-render();
+const $=(selector)=>document.querySelector(selector);const tools=[
+{name:'Visual Studio Code',category:'Dev',tag:'Editor',desc:'Éditeur de code complet, extensible et multiplateforme.',url:'https://code.visualstudio.com/download',source:'Microsoft',color:'blue'},
+{name:'Git',category:'Dev',tag:'Versioning',desc:'Système de contrôle de version distribué pour vos projets.',url:'https://git-scm.com/downloads',source:'git-scm.com',color:'orange'},
+{name:'Python',category:'Dev',tag:'Language',desc:'Langage polyvalent pour automatisation, data et développement.',url:'https://www.python.org/downloads/',source:'python.org',color:'yellow'},
+{name:'Node.js',category:'Dev',tag:'Runtime',desc:'Runtime JavaScript pour construire des applications web.',url:'https://nodejs.org/en/download',source:'nodejs.org',color:'green'},
+{name:'Docker Desktop',category:'Dev',tag:'Containers',desc:'Construire, partager et exécuter des applications conteneurisées.',url:'https://www.docker.com/products/docker-desktop/',source:'docker.com',color:'cyan'},
+{name:'Ubuntu',category:'Sys',tag:'Operating system',desc:'Distribution Linux open source pour desktop et serveur.',url:'https://ubuntu.com/download',source:'ubuntu.com',color:'orange'},
+{name:'7-Zip',category:'Sys',tag:'Utility',desc:'Gestionnaire d’archives open source à haut taux de compression.',url:'https://www.7-zip.org/download.html',source:'7-zip.org',color:'yellow'},
+{name:'VirtualBox',category:'Sys',tag:'Virtualization',desc:'Virtualisation x86/AMD64 pour exécuter plusieurs systèmes.',url:'https://www.virtualbox.org/wiki/Downloads',source:'virtualbox.org',color:'blue'},
+{name:'Wireshark',category:'Net',tag:'Network analysis',desc:'Analyseur de protocoles réseau open source.',url:'https://www.wireshark.org/download.html',source:'wireshark.org',color:'purple'},
+{name:'FileZilla',category:'Net',tag:'Transfer',desc:'Client FTP, FTPS et SFTP multiplateforme.',url:'https://filezilla-project.org/download.php',source:'filezilla-project.org',color:'yellow'},
+{name:'Firefox',category:'Net',tag:'Browser',desc:'Navigateur libre, privé et personnalisable par Mozilla.',url:'https://www.mozilla.org/firefox/new/',source:'mozilla.org',color:'orange'},
+{name:'KeePassXC',category:'Safe',tag:'Passwords',desc:'Gestionnaire de mots de passe local et open source.',url:'https://keepassxc.org/download/',source:'keepassxc.org',color:'green'},
+{name:'VLC',category:'Media',tag:'Player',desc:'Lecteur multimédia libre qui lit presque tous les formats.',url:'https://www.videolan.org/vlc/',source:'videolan.org',color:'orange'},
+{name:'OBS Studio',category:'Media',tag:'Streaming',desc:'Enregistrement vidéo et streaming open source.',url:'https://obsproject.com/download',source:'obsproject.com',color:'purple'},
+{name:'GIMP',category:'Media',tag:'Image editing',desc:'Éditeur d’images libre pour retouche et création graphique.',url:'https://www.gimp.org/downloads/',source:'gimp.org',color:'blue'},
+];let active='all';
+function render(){const query=$('#search').value.toLowerCase().trim();const list=tools.filter(t=>(active==='all'||t.category===active)&&(!query||`${t.name} ${t.tag} ${t.desc}`.toLowerCase().includes(query)));$('#tool-count').textContent=tools.length;$('#tool-grid').innerHTML=list.map((tool)=>`<article class="tool-card"><div class="tool-icon ${tool.color}">${tool.name.slice(0,1)}</div><div class="tool-main"><div class="tool-meta"><span>${tool.category}</span><span>${tool.tag}</span></div><h3>${tool.name}</h3><p>${tool.desc}</p><div class="tool-foot"><small>Source : ${tool.source}</small><div><button class="details" data-name="${tool.name}">Détails</button><a href="${tool.url}" target="_blank" rel="noreferrer">Télécharger ↗</a></div></div></div></article>`).join('')||'<div class="no-results">Aucun outil ne correspond à votre recherche.</div>';document.querySelectorAll('.details').forEach((button)=>button.onclick=()=>showDetails(tools.find((t)=>t.name===button.dataset.name)))}
+function showDetails(tool){$('#dialog-title').textContent=tool.name;$('#dialog-body').innerHTML=`<div class="dialog-icon ${tool.color}">${tool.name.slice(0,1)}</div><div class="dialog-tag">${tool.category} · ${tool.tag}</div><h2>${tool.name}</h2><p>${tool.desc}</p><div class="dialog-source">SOURCE OFFICIELLE<strong>${tool.source}</strong></div><a class="download-button" href="${tool.url}" target="_blank" rel="noreferrer">Ouvrir la page officielle ↗</a>`;$('#tool-dialog').showModal()}
+$('#search').addEventListener('input',render);document.querySelectorAll('.filter').forEach((button)=>button.addEventListener('click',()=>{active=button.dataset.category;document.querySelectorAll('.filter').forEach((item)=>item.classList.toggle('active',item===button));render()}));$('#close-dialog').onclick=()=>$('#tool-dialog').close();render();
