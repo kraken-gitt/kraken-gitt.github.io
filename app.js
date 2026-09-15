@@ -9,13 +9,13 @@ const endpoint = document.querySelector('#endpoint');
 const sources = ['GitHub','GitLab','Reddit','X / Twitter','Instagram','YouTube','Twitch','Medium','Dev.to','Keybase','Mastodon','Telegram'];
 
 function demo(value) {
-  state.innerHTML = '<span class="state-icon">◌</span><div><strong>Aperçu local généré</strong><small>Ces cartes sont un aperçu : aucune présence n’est confirmée sans backend Sherlock.</small></div>';
+  state.innerHTML = '<span class="state-icon">◌</span><div><strong>Aperçu local généré</strong><small>Ces cartes sont un aperçu : aucune présence n’est confirmée sans backend Krakloock.</small></div>';
   sourceGrid.innerHTML = sources.map((name) => `<div class="source-chip demo"><div>${name}<span>APERÇU / NON VÉRIFIÉ</span></div><a href="#" aria-label="Aperçu ${name}">Ouvrir ↗</a></div>`).join('');
 }
 
 function renderReal(items) {
   sourceGrid.innerHTML = items.map((item) => `<div class="source-chip ${item.status === 'Claimed' ? 'verified' : ''}"><div>${item.site}<span>${item.status.toUpperCase()}</span></div><a href="${item.url || '#'}" target="_blank" rel="noreferrer">Ouvrir ↗</a></div>`).join('') || '<div class="source-chip">Aucun résultat retourné</div>';
-  state.innerHTML = '<span class="state-icon">✓</span><div><strong>Résultats Sherlock reçus</strong><small>Statuts retournés par votre moteur backend.</small></div>';
+  state.innerHTML = '<span class="state-icon">✓</span><div><strong>Résultats Krakloock reçus</strong><small>Statuts retournés par votre moteur backend.</small></div>';
 }
 
 form.addEventListener('submit', async (event) => {
@@ -30,7 +30,7 @@ form.addEventListener('submit', async (event) => {
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
-  state.innerHTML = '<span class="state-icon">…</span><div><strong>Recherche en cours</strong><small>Le moteur Sherlock analyse les sources publiques.</small></div>';
+  state.innerHTML = '<span class="state-icon">…</span><div><strong>Recherche en cours</strong><small>Le moteur Krakloock analyse les sources publiques.</small></div>';
   try {
     const response = await fetch(`${api.replace(/\/$/, '')}/search`, {
       method: 'POST',
