@@ -16,7 +16,7 @@
   <header class="site-header">
     <a class="brand" href="#top" aria-label="Kraken Virtual accueil"><span class="brand-mark">K</span><span>KRAKEN<span class="brand-accent">.</span>VIRTUAL</span></a>
     <nav class="nav-links" aria-label="Navigation principale">
-      <a href="#platform">Plateforme</a><a href="#method">Méthode</a><a href="#signal">Signal</a>
+      <a href="#platform">Plateforme</a><a href="#tools">Outils</a><a href="#method">Méthode</a><a href="#signal">Signal</a>
     </nav>
     <a class="header-cta" href="#contact">Parler à un expert <span>↗</span></a>
     <button class="menu-toggle" aria-label="Ouvrir le menu">☰</button>
@@ -47,6 +47,30 @@
         <article class="feature-card reveal delay-1"><div class="feature-num">01</div><div><h3>Sentinel intelligence</h3><p>Une couche de renseignement qui corrèle vos signaux faibles avec les menaces du monde réel.</p><a href="#contact">Découvrir <span>↗</span></a></div><div class="feature-icon">◌</div></article>
         <article class="feature-card reveal delay-2"><div class="feature-num">02</div><div><h3>Response, amplified</h3><p>Des playbooks autonomes qui passent du signal à l'action en quelques millisecondes.</p><a href="#contact">Découvrir <span>↗</span></a></div><div class="feature-icon">⌁</div></article>
         <article class="feature-card reveal delay-3"><div class="feature-num">03</div><div><h3>Clarity by design</h3><p>Un centre de commande pensé pour les décisions critiques, pas pour les tableaux de bord décoratifs.</p><a href="#contact">Découvrir <span>↗</span></a></div><div class="feature-icon">⊙</div></article>
+      </div>
+    </section>
+
+    <section id="tools" class="tools-section">
+      <div class="tools-heading reveal"><div class="eyebrow">[ KRAKEN TOOLKIT / LOCAL ]</div><h2>Testez votre<br><em>surface d'attaque.</em></h2><p>Trois outils utiles, directement dans votre navigateur. Vos données ne quittent jamais votre appareil.</p><span class="local-badge"><i></i> 100% CLIENT-SIDE</span></div>
+      <div class="tools-grid">
+        <article class="tool-card reveal delay-1">
+          <div class="tool-card-top"><span class="tool-index">01 / IDENTITY</span><span class="tool-symbol">◈</span></div>
+          <h3>Évaluer un mot de passe</h3><p class="tool-description">Mesurez sa robustesse sans jamais l'envoyer sur le réseau.</p>
+          <div class="input-wrap"><input id="password-input" type="password" autocomplete="off" placeholder="Votre mot de passe…"><button id="toggle-password" type="button" aria-label="Afficher le mot de passe">◉</button></div>
+          <div class="strength-row"><span id="password-strength">EN ATTENTE</span><span id="password-score">0 / 100</span></div><div class="strength-meter"><i id="password-meter"></i></div><ul id="password-tips" class="tool-tips"><li>12 caractères ou plus recommandés</li><li>Ajoutez des chiffres et symboles</li></ul>
+        </article>
+        <article class="tool-card reveal delay-2">
+          <div class="tool-card-top"><span class="tool-index">02 / NETWORK</span><span class="tool-symbol">⌁</span></div>
+          <h3>Inspecter une URL</h3><p class="tool-description">Repérez les signaux classiques d'une adresse potentiellement risquée.</p>
+          <div class="input-wrap"><input id="url-input" type="url" placeholder="https://exemple.com"><button id="check-url" type="button" aria-label="Analyser l'URL">↗</button></div>
+          <div id="url-result" class="tool-result neutral"><span class="result-dot"></span><strong>EN ATTENTE</strong><small>Collez une adresse pour lancer l'analyse locale.</small></div>
+        </article>
+        <article class="tool-card reveal delay-3">
+          <div class="tool-card-top"><span class="tool-index">03 / VAULT</span><span class="tool-symbol">✦</span></div>
+          <h3>Générer un secret</h3><p class="tool-description">Créez une chaîne cryptographiquement aléatoire pour vos accès.</p>
+          <div class="secret-output"><code id="secret-output">Cliquez pour générer</code><button id="copy-secret" type="button" aria-label="Copier le secret">⧉</button></div>
+          <div class="generator-options"><label><input id="secret-symbols" type="checkbox" checked> Symboles</label><label><input id="secret-numbers" type="checkbox" checked> Chiffres</label><button id="generate-secret" class="mini-button" type="button">GÉNÉRER <span>↗</span></button></div>
+        </article>
       </div>
     </section>
 
