@@ -1,0 +1,23 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+  kraken-ai:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: devstral-small-2
+      JWT_SECRET: replace-with-a-long-random-secret
+    volumes:
+      - kraken-data:/app/data
+    depends_on:
+      - ollama
+volumes:
+  ollama:
+  kraken-data:
