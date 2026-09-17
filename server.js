@@ -26,7 +26,8 @@ const queries = {
 };
 app.use(express.json({ limit: '64kb' }));
 app.use(cookieParser());
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, { index: false }));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'render-index.html')));
 function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) { return `${salt}:${crypto.scryptSync(password, salt, 64).toString('hex')}`; }
 function verifyPassword(password, stored) { const [salt, hash] = stored.split(':'); return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), crypto.scryptSync(password, salt, 64)); }
 function sessionCookie(res, userId) { res.cookie('kraken_session', jwt.sign({ sub: userId }, secret, { expiresIn: '30d' }), { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: 30 * 24 * 60 * 60 * 1000 }); }
@@ -39,5 +40,5 @@ app.get('/api/auth/me', auth, (req, res) => res.json({ user: req.user }));
 app.get('/api/chat/history', auth, (req, res) => res.json({ messages: queries.messages.all(req.user.id) }));
 app.delete('/api/chat/history', auth, (req, res) => { queries.clearMessages.run(req.user.id); res.json({ ok: true }); });
 app.post('/api/chat', auth, async (req, res) => { const content = String(req.body.message || '').trim(); if (!content || content.length > 12000) return res.status(400).json({ error: 'Message must contain between 1 and 12,000 characters.' }); queries.addMessage.run(req.user.id, 'user', content); const history = queries.messages.all(req.user.id).slice(-20).map(m => ({ role: m.role, content: m.content })); let answer; try { const response = await fetch(`${ollamaUrl}/api/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model, stream: false, options: { temperature: 0.2 }, messages: [{ role: 'system', content: 'You are KrakenAI, a precise senior software engineer. Help with coding, debugging, architecture and secure implementations. Return concise explanations and production-ready code.' }, ...history] }) }); if (!response.ok) throw new Error(`Ollama returned ${response.status}`); const data = await response.json(); answer = data.message?.content || 'Je n’ai pas reçu de réponse exploitable.'; } catch (error) { console.error('Local model error:', error.message); return res.status(503).json({ error: `Le modèle local ${model} est indisponible. Lance Ollama et télécharge le modèle avec: ollama pull ${model}` }); } queries.addMessage.run(req.user.id, 'assistant', answer); res.json({ message: { role: 'assistant', content: answer } }); });
-app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, 'render-index.html')));
 app.listen(port, '0.0.0.0', () => console.log(`Kraken-AI listening on port ${port}`));
