@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kraken-gitt.github.io/sitemap.xml
